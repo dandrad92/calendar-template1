@@ -1,0 +1,83 @@
+<div class="container">
+  <div class="header">
+    <img src="./assets/img/nutri.png" alt="Logo" class="header-logo">
+    <h1 class="header-h1">Fechas de Consulta Disponibles</h1>
+  </div>
+  <div class="calendar-box">
+    <div class="calendar-container">
+      <div class="calendar-left">
+        <h2>Selecciona una Fecha</h2>
+        <div class="calendar">
+          <div class="calendar-header">
+            <button (click)="prevMonth()">&lt;</button>
+            <span>{{ months[selectedMonth] }} {{ selectedYear }}</span>
+            <button (click)="nextMonth()">&gt;</button>
+          </div>
+          <div class="calendar-body">
+            <div class="calendar-day" *ngFor="let day of daysOfWeek">{{ day }}</div>
+            <div class="calendar-date"
+              *ngFor="let date of getCalendarDates()"
+              [class.disabled]="date.isDisabled"
+              [class.selected]="date.isSelected"
+              (click)="selectDate(date.date)">
+              {{ date.day }}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="calendar-right">
+        <h2>Horas Disponibles</h2>
+        <div class="time-slot-row" *ngFor="let row of splitTimes(filteredTimes)">
+          <div class="time-slot" *ngFor="let time of row">
+            <button mat-raised-button color="primary" (click)="selectTime(time)" [disabled]="!isTimeAvailable(time)">
+              {{ time }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form (ngSubmit)="editMode ? updateEvent() : addEvent()" [formGroup]="eventForm">
+      <mat-form-field appearance="fill">
+        <mat-label>Título</mat-label>
+        <input matInput placeholder="Título" formControlName="title" required />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Descripción</mat-label>
+        <input matInput placeholder="Descripción" formControlName="description" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Hora de Inicio</mat-label>
+        <input matInput placeholder="Hora de Inicio" formControlName="startTime" required readonly />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Hora de Fin</mat-label>
+        <input matInput placeholder="Hora de Fin" formControlName="endTime" required readonly />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Ubicación</mat-label>
+        <input matInput placeholder="Ubicación" formControlName="location" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Participante</mat-label>
+        <input matInput placeholder="Participante" formControlName="participant" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">{{ editMode ? 'Actualizar Evento' : 'Agregar Evento' }}</button>
+      <button mat-button type="button" (click)="resetForm()">Cancelar</button>
+    </form>
+  </div>
+</div>
+
+<!-- Lista de eventos -->
+<div class="container-event">
+  <div *ngFor="let event of events">
+    <h3>{{ event.title }}</h3>
+    <p>{{ event.startTime | date:'short' }} - {{ event.endTime | date:'short' }}</p>
+    <p>{{ event.description }}</p>
+    <p>Ubicación: {{ event.location }}</p>
+    <p>Participante: {{ event.participant }}</p>
+    <button mat-raised-button color="warn" (click)="deleteEvent(event.id)">Eliminar</button>
+    <button mat-raised-button color="accent" (click)="editEvent(event)">Editar</button>
+  </div>
+</div>

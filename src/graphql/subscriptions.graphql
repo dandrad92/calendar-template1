@@ -1,0 +1,217 @@
+# this is an auto generated file. This will be overwritten
+
+subscription OnCreateTodo($filter: ModelSubscriptionTodoFilterInput) {
+  onCreateTodo(filter: $filter) {
+    id
+    name
+    description
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnUpdateTodo($filter: ModelSubscriptionTodoFilterInput) {
+  onUpdateTodo(filter: $filter) {
+    id
+    name
+    description
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnDeleteTodo($filter: ModelSubscriptionTodoFilterInput) {
+  onDeleteTodo(filter: $filter) {
+    id
+    name
+    description
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnCreateCalendarEvent(
+  $filter: ModelSubscriptionCalendarEventFilterInput
+) {
+  onCreateCalendarEvent(filter: $filter) {
+    id
+    title
+    description
+    startTime
+    endTime
+    location
+    participant
+    userId
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnUpdateCalendarEvent(
+  $filter: ModelSubscriptionCalendarEventFilterInput
+) {
+  onUpdateCalendarEvent(filter: $filter) {
+    id
+    title
+    description
+    startTime
+    endTime
+    location
+    participant
+    userId
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnDeleteCalendarEvent(
+  $filter: ModelSubscriptionCalendarEventFilterInput
+) {
+  onDeleteCalendarEvent(filter: $filter) {
+    id
+    title
+    description
+    startTime
+    endTime
+    location
+    participant
+    userId
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnCreateUser($filter: ModelSubscriptionUserFilterInput) {
+  onCreateUser(filter: $filter) {
+    id
+    name
+    email
+    role
+    events {
+      nextToken
+      __typename
+    }
+    subscriptions {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnUpdateUser($filter: ModelSubscriptionUserFilterInput) {
+  onUpdateUser(filter: $filter) {
+    id
+    name
+    email
+    role
+    events {
+      nextToken
+      __typename
+    }
+    subscriptions {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnDeleteUser($filter: ModelSubscriptionUserFilterInput) {
+  onDeleteUser(filter: $filter) {
+    id
+    name
+    email
+    role
+    events {
+      nextToken
+      __typename
+    }
+    subscriptions {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnCreateUserSubscription(
+  $filter: ModelSubscriptionUserSubscriptionFilterInput
+) {
+  onCreateUserSubscription(filter: $filter) {
+    id
+    userId
+    user {
+      id
+      name
+      email
+      role
+      createdAt
+      updatedAt
+      __typename
+    }
+    startDate
+    endDate
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnUpdateUserSubscription(
+  $filter: ModelSubscriptionUserSubscriptionFilterInput
+) {
+  onUpdateUserSubscription(filter: $filter) {
+    id
+    userId
+    user {
+      id
+      name
+      email
+      role
+      createdAt
+      updatedAt
+      __typename
+    }
+    startDate
+    endDate
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+subscription OnDeleteUserSubscription(
+  $filter: ModelSubscriptionUserSubscriptionFilterInput
+) {
+  onDeleteUserSubscription(filter: $filter) {
+    id
+    userId
+    user {
+      id
+      name
+      email
+      role
+      createdAt
+      updatedAt
+      __typename
+    }
+    startDate
+    endDate
+    createdAt
+    updatedAt
+    __typename
+  }
+}

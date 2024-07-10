@@ -1,0 +1,241 @@
+# this is an auto generated file. This will be overwritten
+
+mutation CreateTodo(
+  $input: CreateTodoInput!
+  $condition: ModelTodoConditionInput
+) {
+  createTodo(input: $input, condition: $condition) {
+    id
+    name
+    description
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+mutation UpdateTodo(
+  $input: UpdateTodoInput!
+  $condition: ModelTodoConditionInput
+) {
+  updateTodo(input: $input, condition: $condition) {
+    id
+    name
+    description
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+mutation DeleteTodo(
+  $input: DeleteTodoInput!
+  $condition: ModelTodoConditionInput
+) {
+  deleteTodo(input: $input, condition: $condition) {
+    id
+    name
+    description
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+mutation CreateCalendarEvent(
+  $input: CreateCalendarEventInput!
+  $condition: ModelCalendarEventConditionInput
+) {
+  createCalendarEvent(input: $input, condition: $condition) {
+    id
+    title
+    description
+    startTime
+    endTime
+    location
+    participant
+    userId
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+mutation UpdateCalendarEvent(
+  $input: UpdateCalendarEventInput!
+  $condition: ModelCalendarEventConditionInput
+) {
+  updateCalendarEvent(input: $input, condition: $condition) {
+    id
+    title
+    description
+    startTime
+    endTime
+    location
+    participant
+    userId
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+mutation DeleteCalendarEvent(
+  $input: DeleteCalendarEventInput!
+  $condition: ModelCalendarEventConditionInput
+) {
+  deleteCalendarEvent(input: $input, condition: $condition) {
+    id
+    title
+    description
+    startTime
+    endTime
+    location
+    participant
+    userId
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+mutation CreateUser(
+  $input: CreateUserInput!
+  $condition: ModelUserConditionInput
+) {
+  createUser(input: $input, condition: $condition) {
+    id
+    name
+    email
+    role
+    events {
+      nextToken
+      __typename
+    }
+    subscriptions {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+mutation UpdateUser(
+  $input: UpdateUserInput!
+  $condition: ModelUserConditionInput
+) {
+  updateUser(input: $input, condition: $condition) {
+    id
+    name
+    email
+    role
+    events {
+      nextToken
+      __typename
+    }
+    subscriptions {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+mutation DeleteUser(
+  $input: DeleteUserInput!
+  $condition: ModelUserConditionInput
+) {
+  deleteUser(input: $input, condition: $condition) {
+    id
+    name
+    email
+    role
+    events {
+      nextToken
+      __typename
+    }
+    subscriptions {
+      nextToken
+      __typename
+    }
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+mutation CreateUserSubscription(
+  $input: CreateUserSubscriptionInput!
+  $condition: ModelUserSubscriptionConditionInput
+) {
+  createUserSubscription(input: $input, condition: $condition) {
+    id
+    userId
+    user {
+      id
+      name
+      email
+      role
+      createdAt
+      updatedAt
+      __typename
+    }
+    startDate
+    endDate
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+mutation UpdateUserSubscription(
+  $input: UpdateUserSubscriptionInput!
+  $condition: ModelUserSubscriptionConditionInput
+) {
+  updateUserSubscription(input: $input, condition: $condition) {
+    id
+    userId
+    user {
+      id
+      name
+      email
+      role
+      createdAt
+      updatedAt
+      __typename
+    }
+    startDate
+    endDate
+    createdAt
+    updatedAt
+    __typename
+  }
+}
+
+mutation DeleteUserSubscription(
+  $input: DeleteUserSubscriptionInput!
+  $condition: ModelUserSubscriptionConditionInput
+) {
+  deleteUserSubscription(input: $input, condition: $condition) {
+    id
+    userId
+    user {
+      id
+      name
+      email
+      role
+      createdAt
+      updatedAt
+      __typename
+    }
+    startDate
+    endDate
+    createdAt
+    updatedAt
+    __typename
+  }
+}
