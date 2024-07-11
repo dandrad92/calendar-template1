@@ -21,6 +21,7 @@
     "@angular/platform-browser-dynamic": "^18.0.0",
     "@angular/router": "^18.0.0",
     "@apollo/client": "^3.0.0",
+    "@aws-amplify/api-graphql": "^4.1.8",
     "apollo-angular": "^7.0.2",
     "graphql": "^16",
     "ng-fallimg": "^0.0.1",
