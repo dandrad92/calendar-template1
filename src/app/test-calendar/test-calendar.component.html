@@ -1,0 +1,66 @@
+<div class="container">
+    <div class="box">
+      <h2>Selecciona una Fecha y Hora</h2>
+      <div class="inner-box">
+        <div class="left-inner-box">
+          <div class="calendar">
+            <div class="month">
+              <ul>
+                <li class="prev" (click)="previousMonth()">&#10094;</li>
+                <li class="next" (click)="nextMonth()">&#10095;</li>
+                <li>
+                  {{ getMonthName(currentMonth) }} de {{ currentYear }}<br>
+                  <span>Selecciona una fecha</span>
+                </li>
+              </ul>
+            </div>
+            <ul class="weekdays">
+              <li *ngFor="let weekday of weekdays">{{ weekday }}</li>
+            </ul>
+            <ul class="days">
+              <li *ngFor="let day of daysInMonth" 
+                  [class.selected]="selectedDate && selectedDate.getDate() === day && selectedDate.getMonth() === currentMonth && selectedDate.getFullYear() === currentYear"
+                  (click)="selectDate(day)">
+                <span *ngIf="day">{{ day }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="right-inner-box">
+          <h2>Horas Disponibles</h2>
+          <div class="time-buttons">
+            <button *ngFor="let time of availableTimes" 
+                    [class.selected]="selectedTime === time" 
+                    (click)="selectTime(time)">
+              {{ time }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="form-container">
+        <h2>Datos de la cita a programar</h2>
+        <mat-form-field appearance="fill">
+          <mat-label>Fecha Seleccionada</mat-label>
+          <input matInput [value]="selectedDate ? (selectedDate | date: 'fullDate') : ''" readonly>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Hora de Inicio</mat-label>
+          <input matInput [value]="selectedTime" readonly>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Hora de Fin</mat-label>
+          <input matInput [value]="eventForm.get('endTime')?.value" readonly>
+        </mat-form-field>
+      </div>
+      <button class="agendar-btn" (click)="addEvent()">Agendar Cita</button>
+      <div class="events-container">
+        <h2>Eventos Agendados</h2>
+        <ul>
+          <li *ngFor="let event of events">
+            {{ event.date | date }} - {{ event.startTime }} a {{ event.endTime }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  

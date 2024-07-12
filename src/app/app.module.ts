@@ -11,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-
+import { TestCalendarComponent } from './test-calendar/test-calendar.component';
 import { AppComponent } from './app.component';
 import { CalendarComponent } from './calendar/calendar.component';
 
