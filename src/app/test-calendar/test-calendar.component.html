@@ -1,65 +1,65 @@
 <div class="container">
     <div class="box">
-      <h2>Selecciona una Fecha y Hora</h2>
       <div class="inner-box">
         <div class="left-inner-box">
+          <h2>Calendario</h2>
           <div class="calendar">
             <div class="month">
               <ul>
                 <li class="prev" (click)="previousMonth()">&#10094;</li>
                 <li class="next" (click)="nextMonth()">&#10095;</li>
-                <li>
-                  {{ getMonthName(currentMonth) }} de {{ currentYear }}<br>
-                  <span>Selecciona una fecha</span>
-                </li>
+                <li>{{ getMonthName(currentMonth) }}<br><span style="font-size:18px">{{ currentYear }}</span></li>
               </ul>
             </div>
             <ul class="weekdays">
-              <li *ngFor="let weekday of weekdays">{{ weekday }}</li>
+              <li *ngFor="let day of weekdays">{{ day }}</li>
             </ul>
             <ul class="days">
-              <li *ngFor="let day of daysInMonth" 
-                  [class.selected]="selectedDate && selectedDate.getDate() === day && selectedDate.getMonth() === currentMonth && selectedDate.getFullYear() === currentYear"
-                  (click)="selectDate(day)">
+              <li *ngFor="let day of daysInMonth" [ngClass]="{ 'selected': selectedDate?.getDate() === day }" (click)="selectDate(day)">
                 <span *ngIf="day">{{ day }}</span>
               </li>
             </ul>
           </div>
         </div>
         <div class="right-inner-box">
-          <h2>Horas Disponibles</h2>
+          <h2>Horas disponibles</h2>
           <div class="time-buttons">
-            <button *ngFor="let time of availableTimes" 
-                    [class.selected]="selectedTime === time" 
-                    (click)="selectTime(time)">
-              {{ time }}
-            </button>
+            <div class="time-columns">
+              <div class="time-column">
+                <button *ngFor="let time of filteredTimes.slice(0, filteredTimes.length / 2)" type="button" (click)="selectTime(time)" [ngClass]="{ 'selected': selectedTime === time }">{{ time }}</button>
+              </div>
+              <div class="time-column">
+                <button *ngFor="let time of filteredTimes.slice(filteredTimes.length / 2)" type="button" (click)="selectTime(time)" [ngClass]="{ 'selected': selectedTime === time }">{{ time }}</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <div class="form-container">
         <h2>Datos de la cita a programar</h2>
-        <mat-form-field appearance="fill">
-          <mat-label>Fecha Seleccionada</mat-label>
-          <input matInput [value]="selectedDate ? (selectedDate | date: 'fullDate') : ''" readonly>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Hora de Inicio</mat-label>
-          <input matInput [value]="selectedTime" readonly>
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>Hora de Fin</mat-label>
-          <input matInput [value]="eventForm.get('endTime')?.value" readonly>
-        </mat-form-field>
+        <form [formGroup]="eventForm">
+          <mat-form-field appearance="fill">
+            <mat-label>Fecha seleccionada</mat-label>
+            <input matInput [value]="getFormattedDate(selectedDate)" readonly>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Hora de inicio</mat-label>
+            <input matInput formControlName="startTime" readonly>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Hora de fin</mat-label>
+            <input matInput formControlName="endTime" readonly>
+          </mat-form-field>
+        </form>
       </div>
-      <button class="agendar-btn" (click)="addEvent()">Agendar Cita</button>
       <div class="events-container">
-        <h2>Eventos Agendados</h2>
+        <h2>Eventos agregados</h2>
         <ul>
           <li *ngFor="let event of events">
-            {{ event.date | date }} - {{ event.startTime }} a {{ event.endTime }}
+            {{ getFormattedDate(event.date) }} - {{ event.startTime }} a {{ event.endTime }}
           </li>
         </ul>
+        <button (click)="addEvent()">Agendar Cita</button>
       </div>
     </div>
   </div>

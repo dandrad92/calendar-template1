@@ -1,15 +1,4 @@
-body {
-    font-family: 'Arial', sans-serif;
-    font-size: 16px;
-    font-weight: bold;
-  }
-  
-  h2, h3, h4 {
-    font-family: 'Arial', sans-serif;
-    font-size: 20px;
-    font-weight: 900;
-  }
- .container {
+.container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -134,6 +123,7 @@ body {
     padding: 20px;
     border-radius: 10px;
     color: #333;
+    margin-bottom: 20px;
   }
   
   .form-container h2 {
@@ -147,15 +137,10 @@ body {
   
   .mat-form-field-appearance-fill .mat-form-field-label {
     color: #00A1D7;
-    font-family: "Times New Roman", sans-serif;
-    font-size: 16px;
-    font-weight: bold;
   }
   
   .mat-form-field-appearance-fill .mat-input-element {
     color: #333;
-    font-family: 'Arial', sans-serif;
-    font-size: 16px;
   }
   
   button {
@@ -166,26 +151,44 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-top: 10px;
-    font-family: 'Arial', sans-serif;
-    font-size: 16px;
-    font-weight: bold;
   }
   
   button:hover {
     background-color: #B3E5FC;
   }
   
+  .time-buttons {
+    margin-top: 20px;
+  }
+  
+  .time-buttons h2 {
+    width: 100%;
+    text-align: center;
+    color: #000;
+  }
+  
+  .time-columns {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .time-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
   .time-buttons button {
     background-color: #B3E5FC;
     color: #333;
     border: none;
-    padding: 10px 20px;
+    padding: 10px;
     border-radius: 5px;
     cursor: pointer;
-    margin-bottom: 5px;
-    width: 100%;
     transition: background-color 0.3s;
+    width: 100%;
   }
   
   .time-buttons button.selected {
@@ -195,11 +198,6 @@ body {
   
   .time-buttons button:hover {
     background-color: #FFCDD2;
-  }
-  
-  .agendar-btn {
-    display: block;
-    margin: 20px auto 0 auto;
   }
   
   .events-container {

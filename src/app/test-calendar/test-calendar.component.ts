@@ -29,6 +29,7 @@ export class TestCalendarComponent implements OnInit {
     '10:00', '11:00', '12:00', '13:00', 
     '17:00', '18:00', '19:00', '20:00'
   ];
+  filteredTimes: string[] = [];
   selectedTime: string | null = null;
   events: any[] = [];
   currentMonth: number;
@@ -55,15 +56,12 @@ export class TestCalendarComponent implements OnInit {
     const firstDay = new Date(year, month, 1).getDay();
     const lastDate = new Date(year, month + 1, 0).getDate();
 
-    // Ajustar el punto de inicio basado en el primer día del mes
     let startingPoint = firstDay === 0 ? 6 : firstDay - 1;
 
-    // Rellenar los días antes del primer día del mes
     for (let i = 0; i < startingPoint; i++) {
       this.daysInMonth.push(null);
     }
 
-    // Rellenar los días del mes
     for (let i = 1; i <= lastDate; i++) {
       this.daysInMonth.push(i);
     }
@@ -92,6 +90,12 @@ export class TestCalendarComponent implements OnInit {
   selectDate(day: number | null): void {
     if (day !== null) {
       this.selectedDate = new Date(this.currentYear, this.currentMonth, day);
+      this.selectedTime = null; // Reset selected time when changing the date
+      this.eventForm.patchValue({
+        startTime: '',
+        endTime: ''
+      });
+      this.filterAvailableTimes();
     }
   }
 
@@ -107,25 +111,18 @@ export class TestCalendarComponent implements OnInit {
     if (!startTime) {
       return '';
     }
-
-    let [hours, minutes] = startTime.split(':').map(Number);
-
-    if (isNaN(hours) || isNaN(minutes)) {
-      console.error(`Invalid time format: ${startTime}`);
-      return '';
-    }
-
+    
+    const [hours, minutes] = startTime.split(':').map(Number);
     const endTime = new Date();
     endTime.setHours(hours + 1, minutes);
     return this.formatTime(endTime);
   }
-
+  
   formatTime(date: Date): string {
-    const hours = date.getHours();
+    let hours = date.getHours();
     const minutes = date.getMinutes();
     const strMinutes = minutes < 10 ? '0' + minutes : minutes;
-
-    return `${hours}:${strMinutes}`;
+    return hours + ':' + strMinutes;
   }
 
   addEvent(): void {
@@ -142,5 +139,29 @@ export class TestCalendarComponent implements OnInit {
   getMonthName(monthIndex: number): string {
     const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     return months[monthIndex];
+  }
+
+  getFormattedDate(date: Date | null): string {
+    if (!date) {
+      return '';
+    }
+    const day = date.getDate();
+    const month = this.getMonthName(date.getMonth());
+    const year = date.getFullYear();
+    return `${day} de ${month} de ${year}`;
+  }
+
+  filterAvailableTimes(): void {
+    if (this.selectedDate) {
+      const now = new Date();
+      const selectedDateTime = new Date(this.selectedDate.getTime());
+      this.filteredTimes = this.availableTimes.filter(time => {
+        const [hours, minutes] = time.split(':').map(Number);
+        selectedDateTime.setHours(hours, minutes, 0);
+        return selectedDateTime.getTime() - now.getTime() > 24 * 60 * 60 * 1000;
+      });
+    } else {
+      this.filteredTimes = this.availableTimes;
+    }
   }
 }

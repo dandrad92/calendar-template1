@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID,NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
@@ -14,6 +14,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { TestCalendarComponent } from './test-calendar/test-calendar.component';
 import { AppComponent } from './app.component';
 import { CalendarComponent } from './calendar/calendar.component';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+registerLocaleData(localeEs);
 
 @NgModule({
   imports: [
@@ -42,6 +45,7 @@ import { CalendarComponent } from './calendar/calendar.component';
       }),
       deps: [HttpLink],
     },
+    [{ provide: LOCALE_ID, useValue: 'es' }]
   ],
 })
 export class AppModule { }
