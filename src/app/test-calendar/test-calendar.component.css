@@ -1,4 +1,15 @@
-.container {
+body {
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  h2, h3, h4 {
+    font-family: 'Arial', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+  }
+ .container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -136,10 +147,15 @@
   
   .mat-form-field-appearance-fill .mat-form-field-label {
     color: #00A1D7;
+    font-family: "Times New Roman", sans-serif;
+    font-size: 16px;
+    font-weight: bold;
   }
   
   .mat-form-field-appearance-fill .mat-input-element {
     color: #333;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
   }
   
   button {
@@ -151,6 +167,9 @@
     cursor: pointer;
     transition: background-color 0.3s;
     margin-top: 10px;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
   }
   
   button:hover {
