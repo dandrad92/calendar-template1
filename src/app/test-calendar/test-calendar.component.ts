@@ -29,13 +29,15 @@ export class TestCalendarComponent implements OnInit {
     '10:00', '11:00', '12:00', '13:00', 
     '17:00', '18:00', '19:00', '20:00'
   ];
-  filteredTimes: string[] = [];
   selectedTime: string | null = null;
   events: any[] = [];
   currentMonth: number;
   currentYear: number;
   daysInMonth: (number | null)[] = [];
   weekdays: string[] = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+  filteredTimes: string[] = [];
+  firstColumnTimes: string[] = [];
+  secondColumnTimes: string[] = [];
 
   constructor(private fb: FormBuilder) {
     const today = new Date();
@@ -43,7 +45,13 @@ export class TestCalendarComponent implements OnInit {
     this.currentYear = today.getFullYear();
     this.eventForm = this.fb.group({
       startTime: [''],
-      endTime: ['']
+      endTime: [''],
+      nombre: [''],
+      apellidos: [''],
+      modalidad: [''],
+      motivoConsulta: [''],
+      telefono: [''],
+      correo: ['']
     });
   }
 
@@ -56,12 +64,15 @@ export class TestCalendarComponent implements OnInit {
     const firstDay = new Date(year, month, 1).getDay();
     const lastDate = new Date(year, month + 1, 0).getDate();
 
+    // Ajustar el punto de inicio basado en el primer día del mes
     let startingPoint = firstDay === 0 ? 6 : firstDay - 1;
 
+    // Rellenar los días antes del primer día del mes
     for (let i = 0; i < startingPoint; i++) {
       this.daysInMonth.push(null);
     }
 
+    // Rellenar los días del mes
     for (let i = 1; i <= lastDate; i++) {
       this.daysInMonth.push(i);
     }
@@ -90,12 +101,35 @@ export class TestCalendarComponent implements OnInit {
   selectDate(day: number | null): void {
     if (day !== null) {
       this.selectedDate = new Date(this.currentYear, this.currentMonth, day);
-      this.selectedTime = null; // Reset selected time when changing the date
+      this.filterAvailableTimes();
+      this.selectedTime = null;
       this.eventForm.patchValue({
         startTime: '',
         endTime: ''
       });
-      this.filterAvailableTimes();
+    }
+  }
+
+  filterAvailableTimes(): void {
+    const now = new Date();
+    const selectedDateTime = this.selectedDate ? new Date(this.selectedDate.getTime()) : null;
+
+    if (selectedDateTime) {
+      this.filteredTimes = this.availableTimes.filter(time => {
+        const [hours, minutes] = time.split(':').map(Number);
+        const timeDate = new Date(selectedDateTime);
+        timeDate.setHours(hours, minutes, 0);
+
+        return timeDate.getTime() - now.getTime() >= 24 * 60 * 60 * 1000;
+      });
+
+      const middleIndex = Math.ceil(this.filteredTimes.length / 2);
+      this.firstColumnTimes = this.filteredTimes.slice(0, middleIndex);
+      this.secondColumnTimes = this.filteredTimes.slice(middleIndex);
+    } else {
+      this.filteredTimes = [];
+      this.firstColumnTimes = [];
+      this.secondColumnTimes = [];
     }
   }
 
@@ -107,22 +141,17 @@ export class TestCalendarComponent implements OnInit {
     });
   }
 
-  calculateEndTime(startTime: string | null): string {
-    if (!startTime) {
-      return '';
-    }
-    
+  calculateEndTime(startTime: string): string {
     const [hours, minutes] = startTime.split(':').map(Number);
     const endTime = new Date();
     endTime.setHours(hours + 1, minutes);
     return this.formatTime(endTime);
   }
-  
+
   formatTime(date: Date): string {
-    let hours = date.getHours();
+    const hours = date.getHours();
     const minutes = date.getMinutes();
-    const strMinutes = minutes < 10 ? '0' + minutes : minutes;
-    return hours + ':' + strMinutes;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   }
 
   addEvent(): void {
@@ -142,26 +171,8 @@ export class TestCalendarComponent implements OnInit {
   }
 
   getFormattedDate(date: Date | null): string {
-    if (!date) {
-      return '';
-    }
-    const day = date.getDate();
-    const month = this.getMonthName(date.getMonth());
-    const year = date.getFullYear();
-    return `${day} de ${month} de ${year}`;
-  }
-
-  filterAvailableTimes(): void {
-    if (this.selectedDate) {
-      const now = new Date();
-      const selectedDateTime = new Date(this.selectedDate.getTime());
-      this.filteredTimes = this.availableTimes.filter(time => {
-        const [hours, minutes] = time.split(':').map(Number);
-        selectedDateTime.setHours(hours, minutes, 0);
-        return selectedDateTime.getTime() - now.getTime() > 24 * 60 * 60 * 1000;
-      });
-    } else {
-      this.filteredTimes = this.availableTimes;
-    }
+    if (!date) return '';
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Intl.DateTimeFormat('es-ES', options).format(date);
   }
 }
