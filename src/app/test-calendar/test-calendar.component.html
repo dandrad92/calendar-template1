@@ -60,10 +60,12 @@
     <h2>Datos de la cita a programar</h2>
     <form [formGroup]="eventForm" (ngSubmit)="addEvent()">
       <mat-form-field appearance="fill">
+        <mat-error *ngIf="eventForm.controls['nombre'].invalid && eventForm.controls['nombre'].touched">Nombre es requerido</mat-error>
         <mat-label>Nombre</mat-label>
         <input matInput formControlName="nombre">
       </mat-form-field>
       <mat-form-field appearance="fill">
+        <mat-error *ngIf="eventForm.controls['apellidos'].invalid && eventForm.controls['apellidos'].touched">Apellidos es requerido</mat-error>
         <mat-label>Apellidos</mat-label>
         <input matInput formControlName="apellidos">
       </mat-form-field>
@@ -79,19 +81,34 @@
         <mat-label>Hora de fin</mat-label>
         <input matInput [value]="eventForm.get('endTime')?.value" readonly>
       </mat-form-field>
+      <div class="custom-select-row">
+        <div class="custom-select-container">
+          <label for="modalidad">Modalidad</label>
+          <select id="modalidad" formControlName="modalidad">
+            <option *ngFor="let option of modalidadOptions" [value]="option">{{ option }}</option>
+          </select>
+          <div *ngIf="eventForm.controls['modalidad'].invalid && eventForm.controls['modalidad'].touched" class="error-message">
+            Modalidad es requerida
+          </div>
+        </div>
+        <div class="custom-select-container">
+          <label for="motivoConsulta">Motivo de consulta</label>
+          <select id="motivoConsulta" formControlName="motivoConsulta">
+            <option *ngFor="let option of motivoConsultaOptions" [value]="option">{{ option }}</option>
+          </select>
+          <div *ngIf="eventForm.controls['motivoConsulta'].invalid && eventForm.controls['motivoConsulta'].touched" class="error-message">
+            Motivo de consulta es requerido
+          </div>
+        </div>
+      </div>
       <mat-form-field appearance="fill">
-        <mat-label>Modalidad</mat-label>
-        <input matInput formControlName="modalidad">
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>Motivo de consulta</mat-label>
-        <input matInput formControlName="motivoConsulta">
-      </mat-form-field>
-      <mat-form-field appearance="fill">
+        <mat-error *ngIf="eventForm.controls['telefono'].invalid && eventForm.controls['telefono'].touched">Teléfono es requerido</mat-error>
+        
         <mat-label>Teléfono</mat-label>
         <input matInput formControlName="telefono">
       </mat-form-field>
       <mat-form-field appearance="fill">
+        <mat-error *ngIf="eventForm.controls['correo'].invalid && eventForm.controls['correo'].touched">Correo electrónico es requerido</mat-error>
         <mat-label>Correo electrónico</mat-label>
         <input matInput formControlName="correo">
       </mat-form-field>
@@ -99,7 +116,10 @@
         <button mat-raised-button color="primary" type="submit">Agendar Cita</button>
       </div>
     </form>
+     <!-- Mostrar mensaje de éxito -->
+  
   </div>
+
 
   <div class="events-container">
     <h2>Eventos Agregados</h2>

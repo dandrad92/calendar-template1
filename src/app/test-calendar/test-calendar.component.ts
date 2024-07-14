@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -24,6 +24,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 })
 export class TestCalendarComponent implements OnInit {
   eventForm: FormGroup;
+ 
   selectedDate: Date | null = null;
   availableTimes: string[] = [
     '10:00', '11:00', '12:00', '13:00',
@@ -36,6 +37,8 @@ export class TestCalendarComponent implements OnInit {
   currentYear: number;
   daysInMonth: (number | null)[] = [];
   weekdays: string[] = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+  modalidadOptions: string[] = ['Online', 'Presencial', 'Telefónica'];
+  motivoConsultaOptions: string[] = ['Consulta General', 'Revisión', 'Emergencia'];
   firstColumnTimes: string[] = [];
   secondColumnTimes: string[] = [];
   today: Date = new Date();
@@ -44,15 +47,16 @@ export class TestCalendarComponent implements OnInit {
     this.currentMonth = this.today.getMonth();
     this.currentYear = this.today.getFullYear();
     this.eventForm = this.fb.group({
-      nombre: [''],
-      apellidos: [''],
+      nombre: ['', Validators.required],
+      apellidos: ['', Validators.required],
       startTime: [''],
       endTime: [''],
-      modalidad: [''],
-      motivoConsulta: [''],
-      telefono: [''],
-      correo: ['']
+      modalidad: ['', Validators.required],
+      motivoConsulta: ['', Validators.required],
+      telefono: ['', Validators.required],
+      correo: ['', Validators.required]
     });
+    
   }
 
   ngOnInit(): void {
@@ -144,11 +148,24 @@ export class TestCalendarComponent implements OnInit {
       date: this.selectedDate,
       ...this.eventForm.value
     };
-    this.events.push(event);
-    this.eventForm.reset();
-    this.selectedDate = null;
-    this.selectedTime = null;
+    if(this.eventForm.valid){
+      this.events.push(event);
+    
+
+      // También puedes asegurarte de que los mensajes de error no se muestren
+      
+      this.eventForm.reset();
+      
+      this.selectedDate = null;
+      this.selectedTime = null;
+      console.log("Formulario independiente válido:", this.eventForm.value);
+    }
+    else {
+      this.eventForm.markAllAsTouched();
+    }
+    
   }
+ 
 
   filterTimes(): void {
     if (this.selectedDate) {
