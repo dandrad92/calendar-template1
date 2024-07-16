@@ -59,6 +59,7 @@
   <div class="form-container">
     <h2>Datos de la cita a programar</h2>
     <form [formGroup]="eventForm" (ngSubmit)="addEvent()">
+      
       <mat-form-field appearance="fill">
         <mat-error *ngIf="eventForm.controls['nombre'].invalid && eventForm.controls['nombre'].touched">Nombre es requerido</mat-error>
         <mat-label>Nombre</mat-label>
@@ -71,13 +72,16 @@
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Fecha seleccionada</mat-label>
+        
         <input matInput [value]="getFormattedDate(selectedDate)" readonly>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Hora de inicio</mat-label>
+        <mat-error *ngIf="eventForm.controls['startTime'].invalid ">Hora de Consulta es requerida</mat-error>
         <input matInput [value]="eventForm.get('startTime')?.value" readonly>
       </mat-form-field>
       <mat-form-field appearance="fill">
+        <mat-error *ngIf="eventForm.controls['endTime'].invalid ">Hora de Consulta es requerida</mat-error>
         <mat-label>Hora de fin</mat-label>
         <input matInput [value]="eventForm.get('endTime')?.value" readonly>
       </mat-form-field>
@@ -101,17 +105,29 @@
           </div>
         </div>
       </div>
+      <!--
       <mat-form-field appearance="fill">
         <mat-error *ngIf="eventForm.controls['telefono'].invalid && eventForm.controls['telefono'].touched">Teléfono es requerido</mat-error>
         
         <mat-label>Teléfono</mat-label>
         <input matInput formControlName="telefono">
+      </mat-form-field>-->
+      <mat-form-field appearance="fill">
+        <mat-error *ngIf="submitted && eventForm.controls['telefono'].errors?.['required']">Teléfono es requerido</mat-error>
+        <mat-error *ngIf="submitted && (eventForm.controls['telefono'].errors?.['pattern'] || eventForm.controls['telefono'].errors?.['maxlength'] || eventForm.controls['telefono'].errors?.['minlength'])">
+          El número de teléfono debe tener exactamente 10 dígitos.
+        </mat-error>
+        <mat-label>Teléfono</mat-label>
+        <input matInput formControlName="telefono" (keypress)="keyPress($event)">
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-error *ngIf="eventForm.controls['correo'].invalid && eventForm.controls['correo'].touched">Correo electrónico es requerido</mat-error>
         <mat-label>Correo electrónico</mat-label>
         <input matInput formControlName="correo">
       </mat-form-field>
+       <div *ngIf="showError" class="alert alert-danger">
+        <strong>Error:</strong> Hay errores en el formulario. Por favor, corrígelos antes de enviar.
+      </div>
       <div class="button-container">
         <button mat-raised-button color="primary" type="submit">Agendar Cita</button>
       </div>
@@ -119,8 +135,6 @@
      <!-- Mostrar mensaje de éxito -->
   
   </div>
-
-
   <div class="events-container">
     <h2>Eventos Agregados</h2>
     <ul>

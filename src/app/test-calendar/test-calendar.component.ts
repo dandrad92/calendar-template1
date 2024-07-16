@@ -6,7 +6,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-
 @Component({
   standalone: true,
   selector: 'app-test-calendar',
@@ -42,6 +41,8 @@ export class TestCalendarComponent implements OnInit {
   firstColumnTimes: string[] = [];
   secondColumnTimes: string[] = [];
   today: Date = new Date();
+  submitted = false;
+  showError = false; 
 
   constructor(private fb: FormBuilder) {
     this.currentMonth = this.today.getMonth();
@@ -49,14 +50,29 @@ export class TestCalendarComponent implements OnInit {
     this.eventForm = this.fb.group({
       nombre: ['', Validators.required],
       apellidos: ['', Validators.required],
-      startTime: [''],
-      endTime: [''],
+      startTime: ['', Validators.required],
+      endTime: ['', Validators.required],
       modalidad: ['', Validators.required],
+      
       motivoConsulta: ['', Validators.required],
-      telefono: ['', Validators.required],
-      correo: ['', Validators.required]
+      telefono: ['', [
+        Validators.required,
+        Validators.pattern("^[0-9]*$"),
+        Validators.minLength(10),
+        Validators.maxLength(10)
+      ]],
+      correo: ['', Validators.required],
     });
     
+  }
+  get f() { return this.eventForm.controls; }
+
+  keyPress(event: any) {
+    const pattern = /[0-9\+\-\ ]/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (event.keyCode !== 8 && !pattern.test(inputChar)) {
+      event.preventDefault();
+    }
   }
 
   ngOnInit(): void {
@@ -148,19 +164,22 @@ export class TestCalendarComponent implements OnInit {
       date: this.selectedDate,
       ...this.eventForm.value
     };
+    this.submitted = true;
     if(this.eventForm.valid){
       this.events.push(event);
-    
-
+      console.log("Formulario independiente válido:", this.eventForm.value);
       // También puedes asegurarte de que los mensajes de error no se muestren
-      
       this.eventForm.reset();
-      
       this.selectedDate = null;
       this.selectedTime = null;
-      console.log("Formulario independiente válido:", this.eventForm.value);
+     
     }
     else {
+      this.showError = true;
+      // Ocultar el mensaje de error después de 5 segundos
+      setTimeout(() => {
+        this.showError = false;
+      }, 10000);
       this.eventForm.markAllAsTouched();
     }
     
@@ -199,5 +218,8 @@ export class TestCalendarComponent implements OnInit {
   getMonthName(monthIndex: number): string {
     const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     return months[monthIndex];
+  }
+  get phoneNumber() {
+    return this.eventForm.get('phoneNumber');
   }
 }
