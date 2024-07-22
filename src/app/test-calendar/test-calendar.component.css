@@ -266,3 +266,15 @@ button:hover {
 .mat-form-field {
   width: 100%;
 }
+.container-event {
+  background-color: #B3E5FC;
+  padding: 20px;
+  border-radius: 10px;
+  color: #333;
+  margin-top: 20px;
+  display: flex;
+}
+.event-item{
+  background-color: #df99db;
+  border:#000;
+}

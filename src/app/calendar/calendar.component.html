@@ -41,7 +41,7 @@
     <form (ngSubmit)="editMode ? updateEvent() : addEvent()" [formGroup]="eventForm">
       <mat-form-field appearance="fill">
         <mat-label>Título</mat-label>
-        <input matInput placeholder="Título" formControlName="title" required />
+        <input matInput placeholder="Título" formControlName="nombre" required />
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Descripción</mat-label>
@@ -61,7 +61,7 @@
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Participante</mat-label>
-        <input matInput placeholder="Participante" formControlName="participant" />
+        <input matInput placeholder="apellido" formControlName="apellido" />
       </mat-form-field>
       <button mat-raised-button color="primary" type="submit">{{ editMode ? 'Actualizar Evento' : 'Agregar Evento' }}</button>
       <button mat-button type="button" (click)="resetForm()">Cancelar</button>
@@ -72,11 +72,11 @@
 <!-- Lista de eventos -->
 <div class="container-event">
   <div *ngFor="let event of events">
-    <h3>{{ event.title }}</h3>
+    <h3>{{ event.nombre }}</h3>
     <p>{{ event.startTime | date:'short' }} - {{ event.endTime | date:'short' }}</p>
     <p>{{ event.description }}</p>
     <p>Ubicación: {{ event.location }}</p>
-    <p>Participante: {{ event.participant }}</p>
+    <p>Participante: {{ event.apellido }}</p>
     <button mat-raised-button color="warn" (click)="deleteEvent(event.id)">Eliminar</button>
     <button mat-raised-button color="accent" (click)="editEvent(event)">Editar</button>
   </div>

@@ -58,7 +58,7 @@
 
   <div class="form-container">
     <h2>Datos de la cita a programar</h2>
-    <form [formGroup]="eventForm" (ngSubmit)="addEvent()">
+    <form [formGroup]="eventForm" (ngSubmit)="addEvent1()">
       
       <mat-form-field appearance="fill">
         <mat-error *ngIf="eventForm.controls['nombre'].invalid && eventForm.controls['nombre'].touched">Nombre es requerido</mat-error>
@@ -66,9 +66,9 @@
         <input matInput formControlName="nombre">
       </mat-form-field>
       <mat-form-field appearance="fill">
-        <mat-error *ngIf="eventForm.controls['apellidos'].invalid && eventForm.controls['apellidos'].touched">Apellidos es requerido</mat-error>
+        <mat-error *ngIf="eventForm.controls['apellido'].invalid && eventForm.controls['apellido'].touched">Apellidos es requerido</mat-error>
         <mat-label>Apellidos</mat-label>
-        <input matInput formControlName="apellidos">
+        <input matInput formControlName="apellido">
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Fecha seleccionada</mat-label>
@@ -133,14 +133,34 @@
       </div>
     </form>
      <!-- Mostrar mensaje de éxito -->
-  
   </div>
-  <div class="events-container">
-    <h2>Eventos Agregados</h2>
-    <ul>
-      <li *ngFor="let event of events">
-        {{ getFormattedDate(event.date) }} - {{ event.startTime }} a {{ event.endTime }}: {{ event.nombre }} {{ event.apellidos }}
-      </li>
-    </ul>
+ <!-- Lista de eventos -->
+
+ <!--
+<div class="container-event">
+  <div *ngFor="let event of events" >
+    <div class="event-item">
+    <h3>{{ event.nombre }}</h3>
+    <p>{{ event.startTime | date:'short' }} - {{ event.endTime | date:'short' }}</p>
+    <p>{{ event.description }}</p>
+    <p>Ubicación: {{ event.location }}</p>
+    <p>Participante: {{ event.apellido }}</p>
+    <button mat-raised-button color="warn" (click)="deleteEvent(event.id)">Eliminar</button>
+    <button mat-raised-button color="accent" (click)="editEvent(event)">Editar</button>
+    </div>
   </div>
+</div>-->
+
+<div class="container-event">
+  <ng-container *ngFor="let event of events">
+    <div class="event-item">
+      <h3>{{ event.nombre }}</h3>
+      <p>{{ event.startTime | date:'short' }} - {{ event.endTime | date:'short' }}</p>
+      <p>{{ event.description }}</p>
+      <p>Ubicación: {{ event.location }}</p>
+      <p>Participante: {{ event.apellido }}</p>
+      <button mat-raised-button color="warn" (click)="deleteEvent(event.id)" aria-label="Eliminar evento">Eliminar</button>
+      <button mat-raised-button color="accent" (click)="editEvent(event)" aria-label="Editar evento">Editar</button>
+    </div>
+  </ng-container>
 </div>

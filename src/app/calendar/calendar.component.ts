@@ -8,56 +8,20 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 
-const GET_EVENTS = gql`
-  query ListEvents {
-    listCalendarEvents {
-      items {
-        id
-        title
-        description
-        startTime
-        endTime
-        location
-        participant
-      }
-    }
-  }
+const GET_EVENTS = gql`query ListAppointments { listAppointments { id nombre apellido description day startTime endTime location modalidad motivo telefono email status } }`;
+
+const CREATE_EVENT = gql`mutation CreateAppointment($nombre: String!, $apellido: String!, $description: String, $day: AWSDateTime!, $startTime: AWSDateTime!, $endTime: AWSDateTime!, $location: String, $modalidad: String, $motivo: String, $telefono: AWSPhone, $email: AWSEmail, $status: String) {
+ createAppointment(nombre: $nombre, apellido: $apellido, description: $description, day: $day, startTime: $startTime, endTime: $endTime, location: $location, modalidad: $modalidad, motivo: $motivo, telefono: $telefono, email: $email, status: $status) { 
+ id nombre apellido description day startTime endTime location modalidad motivo telefono email status } }
 `;
 
-const CREATE_EVENT = gql`
-  mutation CreateEvent($input: CreateCalendarEventInput!) {
-    createCalendarEvent(input: $input) {
-      id
-      title
-      description
-      startTime
-      endTime
-      location
-      participant
-    }
-  }
-`;
-
-const DELETE_EVENT = gql`
-  mutation DeleteEvent($id: ID!) {
-    deleteCalendarEvent(input: { id: $id }) {
-      id
-    }
-  }
+const DELETE_EVENT = gql`mutation DeleteAppointment($id: ID!) { deleteAppointment(id: $id) { id nombre apellido description day startTime endTime location modalidad motivo telefono email status } }
 `;
 
 const UPDATE_EVENT = gql`
-  mutation UpdateEvent($input: UpdateCalendarEventInput!) {
-    updateCalendarEvent(input: $input) {
-      id
-      title
-      description
-      startTime
-      endTime
-      location
-      participant
-    }
-  }
+  mutation UpdateAppointment($id: ID!, $nombre: String, $apellido: String, $description: String, $day: AWSDateTime, $startTime: AWSDateTime, $endTime: AWSDateTime, $location: String, $modalidad: String, $motivo: String, $telefono: AWSPhone, $email: AWSEmail, $status: String) { 
+  updateAppointment(id: $id, nombre: $nombre, apellido: $apellido, description: $description, day: $day, startTime: $startTime, endTime: $endTime, location: $location, modalidad: $modalidad, motivo: $motivo, telefono: $telefono, email: $email, status: $status) 
+  { id nombre apellido description day startTime endTime location modalidad motivo telefono email status } }
 `;
 
 @Component({
@@ -90,12 +54,12 @@ export class CalendarComponent implements OnInit {
 
   constructor(private apollo: Apollo, private fb: FormBuilder) {
     this.eventForm = this.fb.group({
-      title: ['', Validators.required],
+      nombre: ['', Validators.required],
       description: [''],
       startTime: ['', Validators.required],
       endTime: ['', Validators.required],
       location: [''],
-      participant: ['']
+      apellido: ['']
     });
 
     const today = new Date();
@@ -116,7 +80,7 @@ export class CalendarComponent implements OnInit {
       console.log('Loading:', loading);
       console.log('Data:', data);
       if (data) {
-        this.events = data.listCalendarEvents.items;
+        this.events = data.listAppointments;
         this.filterAvailableTimes();
       }
     }, (error) => {
@@ -159,12 +123,12 @@ export class CalendarComponent implements OnInit {
     this.editMode = true;
     this.editEventId = event.id;
     this.eventForm.setValue({
-      title: event.title,
+      nombre: event.title,
       description: event.description,
       startTime: event.startTime,
       endTime: event.endTime,
       location: event.location,
-      participant: event.participant
+      apellido: event.participant
     });
   }
 

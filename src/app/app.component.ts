@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TestCalendarComponent } from './test-calendar/test-calendar.component';
+import { CalendarComponent } from "./calendar/calendar.component";
 
 @Component({
   standalone: true,
@@ -9,8 +10,9 @@ import { TestCalendarComponent } from './test-calendar/test-calendar.component';
   styleUrls: ['./app.component.css'],
   imports: [
     CommonModule,
-    TestCalendarComponent
-  ]
+    TestCalendarComponent,
+    CalendarComponent
+]
 })
 export class AppComponent {
   title = 'my-app';

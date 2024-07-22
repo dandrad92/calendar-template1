@@ -18,8 +18,8 @@ bootstrapApplication(AppComponent, {
       useFactory: (httpLink: HttpLink) => ({
         cache: new InMemoryCache(),
         link: httpLink.create({
-          uri: 'https://g2uy7oikqnbuvcnabszu6n3t3a.appsync-api.us-east-1.amazonaws.com/graphql', // Reemplaza con tu endpoint de AppSync
-          headers: new HttpHeaders().set('x-api-key', 'da2-shz5i5z5arfajpkg4rtbff3dry'), // Reemplaza con tu API key de AppSync
+          uri: 'https://7fyzygnotjasbcqphqftdk55nm.appsync-api.us-east-2.amazonaws.com/graphql', // Reemplaza con tu endpoint de AppSync
+          headers: new HttpHeaders().set('x-api-key', 'da2-dfs7be65kjellg7em3dkavgc4a'), // Reemplaza con tu API key de AppSync
         }),
       }),
       deps: [HttpLink],

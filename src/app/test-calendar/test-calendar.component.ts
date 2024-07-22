@@ -6,6 +6,65 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { Apollo, gql } from 'apollo-angular';
+
+const GET_EVENTS = gql`query ListAppointments { listAppointments { id nombre apellido description day startTime endTime location modalidad motivo telefono email status } }`;
+
+
+const CREATE_EVENT = gql`
+  mutation CreateAppointment(
+    $nombre: String!
+    $apellido: String!
+    $description: String
+    $day: AWSDateTime!
+    $startTime: AWSDateTime!
+    $endTime: AWSDateTime!
+    $location: String
+    $modalidad: String
+    $motivo: String
+    $telefono: AWSPhone
+    $email: AWSEmail
+    $status: String
+  ) {
+    createAppointment(
+      nombre: $nombre
+      apellido: $apellido
+      description: $description
+      day: $day
+      startTime: $startTime
+      endTime: $endTime
+      location: $location
+      modalidad: $modalidad
+      motivo: $motivo
+      telefono: $telefono
+      email: $email
+      status: $status
+    ) {
+      id
+      nombre
+      apellido
+      description
+      day
+      startTime
+      endTime
+      location
+      modalidad
+      motivo
+      telefono
+      email
+      status
+    }
+  }
+`;
+
+const DELETE_EVENT = gql`mutation DeleteAppointment($id: ID!) { deleteAppointment(id: $id) { id nombre apellido description day startTime endTime location modalidad motivo telefono email status } }
+`;
+
+const UPDATE_EVENT = gql`
+  mutation UpdateAppointment($id: ID!, $nombre: String, $apellido: String, $description: String, $day: AWSDateTime, $startTime: AWSDateTime, $endTime: AWSDateTime, $location: String, $modalidad: String, $motivo: String, $telefono: AWSPhone, $email: AWSEmail, $status: String) { 
+  updateAppointment(id: $id, nombre: $nombre, apellido: $apellido, description: $description, day: $day, startTime: $startTime, endTime: $endTime, location: $location, modalidad: $modalidad, motivo: $motivo, telefono: $telefono, email: $email, status: $status) 
+  { id nombre apellido description day startTime endTime location modalidad motivo telefono email status } }
+`;
 @Component({
   standalone: true,
   selector: 'app-test-calendar',
@@ -43,13 +102,15 @@ export class TestCalendarComponent implements OnInit {
   today: Date = new Date();
   submitted = false;
   showError = false; 
+  editMode = false;
+  editEventId: string | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private apollo: Apollo) {
     this.currentMonth = this.today.getMonth();
     this.currentYear = this.today.getFullYear();
     this.eventForm = this.fb.group({
       nombre: ['', Validators.required],
-      apellidos: ['', Validators.required],
+      apellido: ['', Validators.required],
       startTime: ['', Validators.required],
       endTime: ['', Validators.required],
       modalidad: ['', Validators.required],
@@ -59,12 +120,71 @@ export class TestCalendarComponent implements OnInit {
         Validators.required,
         Validators.pattern("^[0-9]*$"),
         Validators.minLength(10),
-        Validators.maxLength(10)
+        Validators.maxLength(12)
       ]],
       correo: ['', Validators.required],
     });
     
   }
+
+  fetchEvents(): void {
+    this.apollo.watchQuery<any>({
+      query: GET_EVENTS,
+    })
+    .valueChanges
+    .subscribe(({ data, loading }) => {
+      console.log('Loading:', loading);
+      console.log('Data:', data);
+      if (data) {
+        this.events = data.listAppointments;
+        this.filterAvailableTimes();
+      }
+    }, (error) => {
+      console.error('Error fetching events:', error);
+    });
+  }
+  filterAvailableTimes(): void {
+    if (!this.selectedDate) {
+      this.filteredTimes = [];
+      return;
+    }
+
+    const selectedDateStr = this.selectedDate.toISOString().split('T')[0];
+    this.filteredTimes = this.availableTimes.filter(time => {
+      return !this.events.some(event => {
+        const eventDateStr = new Date(event.startTime).toISOString().split('T')[0];
+        const eventTimeStr = new Date(event.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        return eventDateStr === selectedDateStr && eventTimeStr === time;
+      });
+    });
+  }
+  deleteEvent(id: string): void {
+    this.apollo.mutate({
+      mutation: DELETE_EVENT,
+      variables: {
+        id: id
+      }
+    }).subscribe(({ data }) => {
+      console.log('Event deleted:', data);
+      this.fetchEvents(); // Refresh events
+    }, (error) => {
+      console.error('Error deleting event:', error);
+    });
+  }
+
+  editEvent(event: any): void {
+    this.editMode = true;
+    this.editEventId = event.id;
+    this.eventForm.setValue({
+      nombre: event.title,
+      description: event.description,
+      startTime: event.startTime,
+      endTime: event.endTime,
+      location: event.location,
+      apellido: event.participant
+    });
+  }
+
   get f() { return this.eventForm.controls; }
 
   keyPress(event: any) {
@@ -77,6 +197,7 @@ export class TestCalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this.generateCalendar(this.currentMonth, this.currentYear);
+    this.fetchEvents();
   }
 
   generateCalendar(month: number, year: number): void {
@@ -166,9 +287,10 @@ export class TestCalendarComponent implements OnInit {
     };
     this.submitted = true;
     if(this.eventForm.valid){
-      this.events.push(event);
+      
       console.log("Formulario independiente válido:", this.eventForm.value);
       // También puedes asegurarte de que los mensajes de error no se muestren
+      this.events.push(event);
       this.eventForm.reset();
       this.selectedDate = null;
       this.selectedTime = null;
@@ -182,7 +304,115 @@ export class TestCalendarComponent implements OnInit {
       }, 10000);
       this.eventForm.markAllAsTouched();
     }
-    
+  }
+  
+
+  addEvent1() {
+    if (this.eventForm.valid) {
+      const selectedDate = this.selectedDate ? this.selectedDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+  
+      const rawStartTime = this.eventForm.value.startTime;
+      const rawEndTime = this.eventForm.value.endTime;
+  
+      console.log('Raw start time:', rawStartTime);
+      console.log('Raw end time:', rawEndTime);
+  
+      let startTime: string;
+      let endTime: string;
+  
+      try {
+        startTime = this.convertToISODate(selectedDate, rawStartTime);
+        endTime = this.convertToISODate(selectedDate, rawEndTime);
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error('Start time or end time is invalid:', error.message);
+        } else {
+          console.error('Start time or end time is invalid:', error);
+        }
+        return; // Stop execution if startTime or endTime is invalid
+      }
+  
+      const formattedPhone = this.formatPhoneNumber(this.eventForm.value.telefono);
+  
+      if (!formattedPhone) {
+        console.error('Invalid phone number format');
+        return; // Stop execution if phone number is invalid
+      }
+  
+      const eventData = {
+        nombre: this.eventForm.value.nombre,
+        apellido: this.eventForm.value.apellido,
+        description: this.eventForm.value.description,
+        day: `${selectedDate}T00:00:00Z`,
+        startTime: startTime,
+        endTime: endTime,
+        location: this.eventForm.value.location,
+        modalidad: this.eventForm.value.modalidad,
+        motivo: this.eventForm.value.motivo,
+        telefono: formattedPhone,
+        email: this.eventForm.value.correo,
+        status: 'scheduled'
+      };
+  
+      console.log('Event Data:', eventData); // Log the event data
+  
+      this.apollo.mutate({
+        mutation: CREATE_EVENT,
+        variables: eventData
+      }).subscribe({
+        next: (result) => {
+          console.log('Event created', result);
+          // Handle successful creation
+        },
+        error: (error) => {
+          console.error('Error adding event:', error);
+        }
+      });
+    } else {
+      console.log('Form is invalid');
+      // Handle form invalid case
+    }
+  }
+  
+  convertToISODate(date: string, time: string): string {
+    const datetime = `${date}T${time}:00Z`;
+    const dateObj = new Date(datetime);
+    if (isNaN(dateObj.getTime())) {
+      throw new Error('Invalid date');
+    }
+    return dateObj.toISOString();
+  }
+  formatPhoneNumber(phone: string): string | null {
+    // Assuming the phone number is in the format '1234567890'
+    const phoneNumberPattern = /^[0-9]{10}$/;
+    if (phoneNumberPattern.test(phone)) {
+      return `+1${phone}`; // Assuming country code +1 (USA). Adjust as needed.
+    }
+    return null;
+  }
+  
+  
+  addEvent3(): void {
+    if (this.eventForm.valid) {
+      this.apollo.mutate({
+        mutation: CREATE_EVENT,
+        variables: {
+          input: this.eventForm.value
+        }
+      }).subscribe(({ data }) => {
+        console.log('Event added:', data);
+        this.fetchEvents(); // Refresh events
+        this.resetForm();
+      }, (error) => {
+        console.error('Error adding event:', error);
+      });
+    }
+  }
+  resetForm(): void {
+    this.eventForm.reset();
+    this.editMode = false;
+    this.editEventId = null;
+    this.filteredTimes = [];
   }
  
 
